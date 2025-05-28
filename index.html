@@ -1,13 +1,52 @@
- <!DOCTYPE html>
-<html>
+<!DOCTYPE html>
+<html lang="fa">
 <head>
-<title>Hello World!</title>
-<link rel="Stylesheet" href="bluestyle.css">
+  <meta charset="UTF-8">
+  <title>برج میلاد - Google 3D Tiles در CesiumJS</title>
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.115/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.115/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <style>
+    html, body, #cesiumContainer {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
 </head>
 <body>
+  <div id="cesiumContainer"></div>
+  <script type="module">
+    import {
+      Viewer,
+      createGooglePhotorealistic3DTileset,
+      Cartesian3
+    } from "https://cdn.jsdelivr.net/npm/cesium@1.115/+esm";
 
-<h1>Hello world!</h1>
-<p>This is the first file in my new Git Repo.</p>
-<p>A new line in our file!</p>
+    const viewer = new Viewer("cesiumContainer", {
+      terrain: Cesium.Terrain.fromWorldTerrain()
+    });
+
+    const tileset = await createGooglePhotorealistic3DTileset({
+      authentication: {
+        googleMapsApiKey: "AIzaSyAozsTBeq_0iZBUk4f19yD39lxOCMqdK-8" // ← کلید Google خودت رو بذار
+      }
+    });
+
+    viewer.scene.primitives.add(tileset);
+
+    // موقعیت دوربین روی برج میلاد
+    const miladTower = Cartesian3.fromDegrees(51.3746, 35.7448, 800);
+    viewer.camera.flyTo({
+      destination: miladTower,
+      orientation: {
+        heading: Cesium.Math.toRadians(0),
+        pitch: Cesium.Math.toRadians(-30),
+        roll: 0.0
+      },
+      duration: 3
+    });
+  </script>
 </body>
-</html> 
+</html>
